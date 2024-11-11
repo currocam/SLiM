@@ -151,10 +151,17 @@ jobs:
           environment-file: treerec/tests/environment.yml
           pkgs-dirs: D:\conda_pkgs_dir
       - name: Update environment
+        shell: bash -el {0}
         run:
           mamba env update -n anaconda-client-env -f treerec/tests/environment.yml
         if: steps.cache.outputs.cache-hit != 'true'
+      - name: Check
+        shell: bash -el {0}
+        run: |
+          # Check if conda or mamba are available
+          conda --version || mamba --version
       - name: Build and test (Debug)
+        shell: bash -el {0}
         run: |
           cd windows_compat/gnulib && \
           touch --date="`date`" aclocal.m4 Makefile.am configure configure.ac config.h.in Makefile.in && \
@@ -164,6 +171,7 @@ jobs:
           cmake -G"MSYS Makefiles" -DCMAKE_BUILD_TYPE=Debug .. && \
           make -j 2 && make test
       - name: Build and test (Release)
+        shell: bash -el {0}
         run: |
           cd windows_compat/gnulib && \
           touch --date="`date`" aclocal.m4 Makefile.am configure configure.ac config.h.in Makefile.in && \
@@ -173,6 +181,7 @@ jobs:
           cmake -G"MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
           make -j 2 && make test
       - name: Treesequence tests
+        shell: bash -el {0}
         run: |
             export PATH=$PATH:$PWD/Release && \
             echo $PATH && \
